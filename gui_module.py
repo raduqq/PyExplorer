@@ -9,9 +9,6 @@ YELLOW = (255, 153, 0)
 BLACK = (0, 0, 0)
 RED = (204, 51, 0)
 
-
-MOVESPEED = 1
-
 class GameObject:
     def __init__(self, game, position):
         self.game = game
@@ -25,6 +22,20 @@ class GameObject:
 
     def draw(self):
         pass
+
+class CloseButton(GameObject):
+    def __init__(self, game, position):
+        super().__init__(game, position)    
+
+    def input(self, events):
+        for event in events:
+            if event.type == MOUSEBUTTONDOWN:
+                self.game.running = False
+                # Close pygame
+                pass            
+
+    def draw(self):
+        pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), 25)
 
 class Highlighter(GameObject):
     def __init__(self, game, position):
@@ -73,13 +84,14 @@ class Game:
         self.window = pygame.display.set_mode([WIDTH, HEIGHT])
         pygame.display.set_caption('PyExplorer')
         pygame.time.Clock().tick(60)
-        # Aici instantiez nebunii?
-       # self.smiley = Smiley(self, [WIDTH // 2, HEIGHT // 2])
-        # AIci adaug window-urile
-        self.gameObjects = [self.smiley]
+        self.running = True
+
+        # Aici instantiez nebunii
+        self.close_butt = CloseButton(self, [WIDTH // 2, HEIGHT // 2])
+        self.gameObjects = [self.close_butt]
 
     def run(self):
-        while True:
+        while self.running == True:
             # Game logic happens here
             self.input()
             self.update()
@@ -108,6 +120,7 @@ def main():
     # Run game
     game = Game()
     game.run()
+    pygame.quit()
 
 if __name__ == '__main__':
     main()

@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
 
-WIDTH = 1280
-HEIGHT = 720
+WIDTH = 800
+HEIGHT = 600
 
 YELLOW = (255, 153, 0)
 BLACK = (0, 0, 0)
