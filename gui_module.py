@@ -1,8 +1,20 @@
 import pygame
 from pygame.locals import *
 
-WIDTH = 1280
-HEIGHT = 720
+pygame.init()
+pygame.font.init()
+
+FONT = "Courier"
+FONT_SIZE = 25
+
+PATH_WIDTH = 100
+PATH_HEIGHT = 50
+
+ICON_WIDTH = 30
+ICON_HEIGHT = 30
+
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 WHITE = (255, 255, 255)
 YELLOW = (255, 153, 0)
@@ -30,9 +42,10 @@ class CloseButton(GameObject):
     def input(self, events):
         for event in events:
             if event.type == MOUSEBUTTONDOWN:
-                self.game.running = False
-                # Close pygame
-                pass            
+                # pos = pygame.mouse.get_pos()
+                # if self.rect.collidepoint(post)
+                    # self.game.running = False
+                pass
 
     def draw(self):
         pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), 25)
@@ -42,16 +55,34 @@ class Highlighter(GameObject):
         super().__init__(game, position)
 
 class File(GameObject):
-    def __init__(self, game, position):
+    def __init__(self, game, position, name):
         super().__init__(game, position)
+        self.name = name
+        self.icon = pygame.image.load("file_icon.png")
+        self.icon = pygame.transform.scale(self.icon, (ICON_WIDTH, ICON_HEIGHT))
+        self.text = self.game.font.render(self.name, False, BLACK)
 
-class Directory(GameObject):
-    def __init__(self, game, position):
+    def draw(self):
+        self.game.window.blit(self.icon, self.position)
+        self.game.window.blit(self.text, (self.position[0] + 35, self.position[1] + 7.5))
+
+class Directory(GameObject):    
+    def __init__(self, game, position, name):
         super().__init__(game, position)
+        self.name = name
+        self.icon = pygame.image.load("dir_icon.png")
+        self.icon = pygame.transform.scale(self.icon, (ICON_WIDTH, ICON_HEIGHT))
+        self.text = self.game.font.render(self.name, False, BLACK)
+
+    def draw(self):
+        self.game.window.blit(self.icon, self.position)
+        self.game.window.blit(self.text, (self.position[0] + 35, self.position[1] + 7.5))
 
 class Filepath(GameObject):
-    def __init__(self, game, position):
+    def __init__(self, game, position, dir_list):
         super().__init__(game, position)
+        self.dir_list = dir_list
+        self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
 
     def input(self, events):
         for event in events:
@@ -76,19 +107,24 @@ class Filepath(GameObject):
         pass
 
     def draw(self):
-        # TODO 
-        pass
+        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT), 5)
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
+
 
 class Game:
     def __init__(self):
-        self.window = pygame.display.set_mode([WIDTH, HEIGHT])
+        self.window = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
         pygame.display.set_caption('PyExplorer')
         pygame.time.Clock().tick(60)
         self.running = True
+        self.font = pygame.font.SysFont(FONT, FONT_SIZE)
 
         # Aici instantiez nebunii
-        self.close_butt = CloseButton(self, [WIDTH // 2, HEIGHT // 2])
-        self.gameObjects = [self.close_butt]
+        self.close_butt = CloseButton(self, [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2])
+        self.file = File(self, [15, 100], "Testfile")
+        self.directory = Directory(self, [15, 130], "Testdir")
+        self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
+        self.gameObjects = [self.file, self.directory, self.filepath]
 
     def run(self):
         while self.running == True:
