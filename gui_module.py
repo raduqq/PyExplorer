@@ -23,6 +23,7 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 153, 0)
 BLACK = (0, 0, 0)
 RED = (204, 51, 0)
+BLUE = (50, 143, 168)
 
 class GameObject:
     def __init__(self, game, position):
@@ -56,10 +57,6 @@ class CloseButton(GameObject):
     def draw(self):
         pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), BUTTON_RADIUS)
         self.game.window.blit(self.text, (self.position[0] - 7, self.position[1] - 10))
-
-class Highlighter(GameObject):
-    def __init__(self, game, position):
-        super().__init__(game, position)
 
 class File(GameObject):
     def __init__(self, game, position, name):
@@ -117,6 +114,20 @@ class Filepath(GameObject):
         pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT), 5)
         self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
 
+class Highlighter(Filepath):
+    def __init__(self, game, position):
+        super().__init__(game, position, dir_list)
+        self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
+
+
+    def draw(self):
+        pygame.draw.rect(self.game.window, BLUE, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT))
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
+
+    def update(self):
+        # go deeper into filetree: self.position[0] + PATH_WIDTH ; else subtract
+        pass    
+
 
 class Game:
     def __init__(self):
@@ -131,7 +142,8 @@ class Game:
         self.file = File(self, [15, 100], "Testfile")
         self.directory = Directory(self, [15, 130], "Testdir")
         self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.gameObjects = [self.close_butt, self.file, self.directory, self.filepath]
+        self.highlighter = Highlighter(self, (0, 0))
+        self.gameObjects = [self.close_butt, self.file, self.directory, self.filepath, self.highlighter]
 
     def run(self):
         while self.running == True:
