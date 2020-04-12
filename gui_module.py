@@ -5,6 +5,10 @@ from math import sqrt
 pygame.init()
 pygame.font.init()
 
+HIGHLIGHT_OFFSET = 2
+
+BORDER_THICKNESS = 2
+
 TEXT_TO_RECT_WIDTH_RATIO = 10
 TEXT_TO_RECT_HEIGHT_RATIO = 5
 
@@ -60,6 +64,7 @@ class CloseButton(GameObject):
 
     def draw(self):
         pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), BUTTON_RADIUS)
+        pygame.draw.circle(self.game.window, BLACK, (int(self.position[0]), int(self.position[1])), BUTTON_RADIUS, BORDER_THICKNESS)
         self.game.window.blit(self.text, (self.position[0] - 5, self.position[1] - 10))
 
 class File(GameObject):
@@ -115,7 +120,8 @@ class Filepath(GameObject):
         pass
 
     def draw(self):
-        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT), 5)
+        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), 0)
+        pygame.draw.rect(self.game.window, BLACK, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), BORDER_THICKNESS)
         self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
 class Highlighter(Filepath):
@@ -124,7 +130,7 @@ class Highlighter(Filepath):
         self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
 
     def draw(self):
-        pygame.draw.rect(self.game.window, BLUE, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT))
+        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
         self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
     def update(self):
@@ -144,6 +150,7 @@ class FrontButton(GameObject):
 
     def draw(self):
         pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), 0)
+        pygame.draw.rect(self.game.window, BLACK, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), BORDER_THICKNESS)
         self.game.window.blit(self.text, (self.position[0] + NAV_BUTTON_SIZE // 3, self.position[1] + NAV_BUTTON_SIZE // 3))
 
 class BackButton(GameObject):
@@ -159,6 +166,7 @@ class BackButton(GameObject):
 
     def draw(self):
         pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), 0)
+        pygame.draw.rect(self.game.window, BLACK, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), BORDER_THICKNESS)
         self.game.window.blit(self.text, (self.position[0] + NAV_BUTTON_SIZE // 3, self.position[1] + NAV_BUTTON_SIZE // 3))
 
 class Game:
@@ -170,14 +178,14 @@ class Game:
         self.font = pygame.font.SysFont(FONT, FONT_SIZE)
 
         # Aici instantiez nebunii
-        self.close_butt = CloseButton(self, [SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2])
+        self.close_butt = CloseButton(self, [SCREEN_WIDTH - BUTTON_RADIUS, BUTTON_RADIUS])
         self.file = File(self, [15, 100], "Testfile")
         self.directory = Directory(self, [15, 130], "Testdir")
-        self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.highlighter = Highlighter(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.front_butt = FrontButton(self, (0,0))
-        self.back_butt = BackButton(self, (200, 200))
-        self.gameObjects = [self.back_butt, self.close_butt, self.file, self.directory, self.filepath, self.highlighter]
+        self.filepath = Filepath(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
+        self.highlighter = Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
+        self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
+        self.back_butt = BackButton(self, (0, 0))
+        self.gameObjects = [self.back_butt, self.close_butt, self.file, self.directory, self.filepath, self.highlighter, self.front_butt]
 
     def run(self):
         while self.running == True:
@@ -213,3 +221,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    #TODO: ls, click directoare
+    #TODO: Functionalitate click buton back/front
+    #TODO: Update file path
+    #TODO: Update highlighter
+    #TODO: Modul draw_border
