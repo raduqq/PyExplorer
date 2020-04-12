@@ -42,7 +42,7 @@ class GameObject:
 class CloseButton(GameObject):
     def __init__(self, game, position):
         super().__init__(game, position)
-        self.text = self.game.font.render("X", False, BLACK)
+        self.text = self.game.font.render("X", False, BLACK, 1)
 
 
     def input(self, events):
@@ -115,10 +115,9 @@ class Filepath(GameObject):
         self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
 
 class Highlighter(Filepath):
-    def __init__(self, game, position):
+    def __init__(self, game, position, dir_list):
         super().__init__(game, position, dir_list)
         self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
-
 
     def draw(self):
         pygame.draw.rect(self.game.window, BLUE, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT))
@@ -142,7 +141,7 @@ class Game:
         self.file = File(self, [15, 100], "Testfile")
         self.directory = Directory(self, [15, 130], "Testdir")
         self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.highlighter = Highlighter(self, (0, 0))
+        self.highlighter = Highlighter(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
         self.gameObjects = [self.close_butt, self.file, self.directory, self.filepath, self.highlighter]
 
     def run(self):
