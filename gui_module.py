@@ -5,13 +5,18 @@ from math import sqrt
 pygame.init()
 pygame.font.init()
 
+TEXT_TO_RECT_WIDTH_RATIO = 10
+TEXT_TO_RECT_HEIGHT_RATIO = 5
+
+NAV_BUTTON_SIZE = 40
 BUTTON_RADIUS = 15
 
 FONT = "Courier"
-FONT_SIZE = 25
 
-PATH_WIDTH = 100
-PATH_HEIGHT = 50
+FONT_SIZE = 20
+
+PATH_WIDTH = 90
+PATH_HEIGHT = 40
 
 ICON_WIDTH = 30
 ICON_HEIGHT = 30
@@ -44,7 +49,6 @@ class CloseButton(GameObject):
         super().__init__(game, position)
         self.text = self.game.font.render("X", False, BLACK, 1)
 
-
     def input(self, events):
         for event in events:
             if event.type == MOUSEBUTTONDOWN:
@@ -56,7 +60,7 @@ class CloseButton(GameObject):
 
     def draw(self):
         pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), BUTTON_RADIUS)
-        self.game.window.blit(self.text, (self.position[0] - 7, self.position[1] - 10))
+        self.game.window.blit(self.text, (self.position[0] - 5, self.position[1] - 10))
 
 class File(GameObject):
     def __init__(self, game, position, name):
@@ -112,7 +116,7 @@ class Filepath(GameObject):
 
     def draw(self):
         pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT), 5)
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
 class Highlighter(Filepath):
     def __init__(self, game, position, dir_list):
@@ -121,12 +125,41 @@ class Highlighter(Filepath):
 
     def draw(self):
         pygame.draw.rect(self.game.window, BLUE, (self.position[0], self.position[1], self.position[0] + PATH_WIDTH, self.position[1] + PATH_HEIGHT))
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // 6, self.position[1] + PATH_HEIGHT // 4))
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
     def update(self):
         # go deeper into filetree: self.position[0] + PATH_WIDTH ; else subtract
         pass    
 
+class FrontButton(GameObject):
+    def __init__(self, game, position):
+        super().__init__(game, position)
+        self.text = self.game.font.render(">", False, BLACK, 1)
+
+    def input(self, events):
+        for event in events:
+            if event.type == MOUSEBUTTONDOWN:
+                # TODO
+                pass
+
+    def draw(self):
+        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), 0)
+        self.game.window.blit(self.text, (self.position[0] + NAV_BUTTON_SIZE // 3, self.position[1] + NAV_BUTTON_SIZE // 3))
+
+class BackButton(GameObject):
+    def __init__(self, game, position):
+        super().__init__(game, position)
+        self.text = self.game.font.render("<", False, BLACK, 1)
+
+    def input(self, events):
+        for event in events:
+            if event.type == MOUSEBUTTONDOWN:
+                # TODO
+                pass
+
+    def draw(self):
+        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], NAV_BUTTON_SIZE, NAV_BUTTON_SIZE), 0)
+        self.game.window.blit(self.text, (self.position[0] + NAV_BUTTON_SIZE // 3, self.position[1] + NAV_BUTTON_SIZE // 3))
 
 class Game:
     def __init__(self):
@@ -142,7 +175,9 @@ class Game:
         self.directory = Directory(self, [15, 130], "Testdir")
         self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
         self.highlighter = Highlighter(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.gameObjects = [self.close_butt, self.file, self.directory, self.filepath, self.highlighter]
+        self.front_butt = FrontButton(self, (0,0))
+        self.back_butt = BackButton(self, (200, 200))
+        self.gameObjects = [self.back_butt, self.close_butt, self.file, self.directory, self.filepath, self.highlighter]
 
     def run(self):
         while self.running == True:
