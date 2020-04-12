@@ -1,8 +1,11 @@
 import pygame
 from pygame.locals import *
+from math import sqrt
 
 pygame.init()
 pygame.font.init()
+
+BUTTON_RADIUS = 15
 
 FONT = "Courier"
 FONT_SIZE = 25
@@ -29,7 +32,7 @@ class GameObject:
     def input(self, events):
         pass
 
-    def update(self):
+    def update(self):   
         pass
 
     def draw(self):
@@ -37,18 +40,22 @@ class GameObject:
 
 class CloseButton(GameObject):
     def __init__(self, game, position):
-        super().__init__(game, position)    
+        super().__init__(game, position)
+        self.text = self.game.font.render("X", False, BLACK)
+
 
     def input(self, events):
         for event in events:
             if event.type == MOUSEBUTTONDOWN:
-                # pos = pygame.mouse.get_pos()
-                # if self.rect.collidepoint(post)
-                    # self.game.running = False
-                pass
+                pos = list(pygame.mouse.get_pos())
+                dist = sqrt((pos[0] - self.position[0])**2 + (pos[1] - self.position[1])**2)
+
+                if dist < BUTTON_RADIUS :
+                    self.game.running = False
 
     def draw(self):
-        pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), 25)
+        pygame.draw.circle(self.game.window, YELLOW, (int(self.position[0]), int(self.position[1])), BUTTON_RADIUS)
+        self.game.window.blit(self.text, (self.position[0] - 7, self.position[1] - 10))
 
 class Highlighter(GameObject):
     def __init__(self, game, position):
@@ -124,7 +131,7 @@ class Game:
         self.file = File(self, [15, 100], "Testfile")
         self.directory = Directory(self, [15, 130], "Testdir")
         self.filepath = Filepath(self, (0, 0), ["Root", "Dir_1", "Dir_2"])
-        self.gameObjects = [self.file, self.directory, self.filepath]
+        self.gameObjects = [self.close_butt, self.file, self.directory, self.filepath]
 
     def run(self):
         while self.running == True:
