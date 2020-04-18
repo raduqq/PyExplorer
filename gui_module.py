@@ -100,47 +100,43 @@ class Filepath(GameObject):
     def __init__(self, game, position, dir_list):
         super().__init__(game, position)
         self.dir_list = dir_list
-        self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
 
     def input(self, events):
-        for event in events:
-            if event.type == KEYDOWN:
-                if event.key == K_d:
-                    # front
-                    pass
-                if event.key == K_a:
-                    # back
-                    pass
-                if event.key == K_w:
-                    # file up
-                    pass
-                if event.key == K_s:
-                    # file down
-                    pass
-            # Sa se intample ceva daca ridici degetu de pe buton?
-                    
-
-    def update(self):
-        # sa se draw-uiasca altfel nuj
         pass
 
     def draw(self):
-        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), 0)
-        pygame.draw.rect(self.game.window, BLACK, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), BORDER_THICKNESS)
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+        cnt = 0
+        for dir in self.dir_list:   
+            text = self.game.font.render(dir, False, BLACK)
+            pygame.draw.rect(self.game.window, YELLOW, (self.position[0] + PATH_WIDTH * cnt , self.position[1], PATH_WIDTH, PATH_HEIGHT), 0)
+            pygame.draw.rect(self.game.window, BLACK, (self.position[0] + PATH_WIDTH * cnt, self.position[1], PATH_WIDTH, PATH_HEIGHT), BORDER_THICKNESS)
+            self.game.window.blit(text, (self.position[0] + PATH_WIDTH * cnt + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+            cnt += 1
+
+    def update(self):
+        self.draw()
+        pass
 
 class Highlighter(Filepath):
-    def __init__(self, game, position, dir_list):
+    def __init__(self, game, position, dir_list, curr_dir):
         super().__init__(game, position, dir_list)
-        self.text = self.game.font.render(self.dir_list[-1], False, BLACK)
+        self.curr_dir = curr_dir
+        self.text = self.game.font.render(self.curr_dir, False, BLACK)
 
     def draw(self):
-        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+        cnt = 0
+        for dir in self.dir_list:
+            if self.curr_dir == dir:
+                break
+            cnt += 1
+
+        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + PATH_WIDTH * (cnt - 1) + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH * (cnt - 1) + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
     def update(self):
         # go deeper into filetree: self.position[0] + PATH_WIDTH ; else subtract
         pass    
+
 
 class FrontButton(GameObject):
     def __init__(self, game, position):
