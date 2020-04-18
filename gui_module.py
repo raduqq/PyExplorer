@@ -41,6 +41,8 @@ CHANGE_FRONT = 2
 CHANGE_PARENT = 3
 CHANGE_CHILD = 4
 
+FILE_X_START = 15
+FILE_Y_START = 100
 class GameObject:
     def __init__(self, game, position):
         self.game = game
@@ -132,8 +134,8 @@ class Highlighter(Filepath):
                 break
             cnt += 1
 
-        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + PATH_WIDTH * (cnt - 1) + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH * (cnt - 1) + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + PATH_WIDTH * cnt + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
+        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH * cnt + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
     def update(self):
         # go deeper into filetree: self.position[0] + PATH_WIDTH ; else subtract
@@ -172,27 +174,35 @@ class BackButton(GameObject):
         self.game.window.blit(self.text, (self.position[0] + NAV_BUTTON_SIZE // 3, self.position[1] + NAV_BUTTON_SIZE // 3))
 
 class Game:
-    def __init__(self):
+    def __init__(self, curr_dir):
         self.window = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
         pygame.display.set_caption('PyExplorer')
         pygame.time.Clock().tick(60)
         self.running = True
         self.font = pygame.font.SysFont(FONT, FONT_SIZE)
-        self.explorer = MyOS(os.getcwd())
-        
-        # Statics
-        self.close_butt = CloseButton(self, [SCREEN_WIDTH - BUTTON_RADIUS, BUTTON_RADIUS])
-        self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
-        self.back_butt = BackButton(self, (0, 0))
-
-        # Dynamics
-        self.file = File(self, [15, 100], "Testfile")
-        self.directory = Directory(self, [15, 130], "Testdir")
-        self.filepath = Filepath(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path().split("/"))
-        self.highlighter = Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path().split("/"), self.explorer.get_dir())
 
         # Aici instantiez nebunii
+        '''
+        self.file = File(self, [15, 100], "Testfile")
+        self.directory = Directory(self, [15, 130], "Testdir")
+        self.filepath = Filepath(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
+        self.highlighter = Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
         self.gameObjects = [self.back_butt, self.close_butt, self.file, self.directory, self.filepath, self.highlighter, self.front_butt]
+        '''
+
+        self.explorer = MyOS(curr_dir)
+        
+        self.dir_objects = [Directory(self, [FILE_X_START, FILE_Y_START + (i * 30)], name) for i, name in enumerate(self.explorer.get_dir_list())]
+        curr_counter = len(self.dir_objects)
+        self.file_objects = [File(self, [FILE_X_START, FILE_Y_START + ((i + curr_counter) * 30)], name) for i, name in enumerate(self.explorer.get_file_list())]
+        self.filepath = [Filepath(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list())]
+        self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
+        self.temp_objects = self.dir_objects + self.file_objects + self.filepath + self.highlighter # update_files
+        # Constant objects
+        self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
+        self.back_butt = BackButton(self, (0, 0))
+        self.close_butt = CloseButton(self, [SCREEN_WIDTH - BUTTON_RADIUS, BUTTON_RADIUS])
+        self.const_objects = [self.back_butt, self.close_butt, self.front_butt]
 
     def run(self):
         while self.running == True:
@@ -203,18 +213,23 @@ class Game:
 
     def input(self):
         events = pygame.event.get()
-        for gameObject in self.gameObjects:
+        for gameObject in self.const_objects:
             gameObject.input(events)
-
+        for gameObject in self.temp_objects:
+            gameObject.input(events)
+    
     def update(self):
-        for gameObject in self.gameObjects:
+        for gameObject in self.const_objects:
             gameObject.update()
-
+        for gameObject in self.temp_objects:
+            gameObject.update()
 
     def draw(self):
         self.window.fill(WHITE)
 
-        for gameObject in self.gameObjects:
+        for gameObject in self.const_objects:
+            gameObject.draw()
+        for gameObject in self.temp_objects:
             gameObject.draw()
 
         pygame.display.update()
@@ -222,15 +237,13 @@ class Game:
 
 def main():
     # Run game
-    game = Game()
+    game = Game(os.getcwd())
     game.run()
     pygame.quit()
 
 if __name__ == '__main__':
     main()
 
-    #TODO: ls, click directoare
-    #TODO: Functionalitate click buton back/front
-    #TODO: Update file path
-    #TODO: Update highlighter
-    #TODO: Modul draw_border
+    #TODO: click directoare
+    #TODO: click buton back/front
+    #TODO: Update-uri (@ toate clasele) + redraw all cand se "taie" din filepath
