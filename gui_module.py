@@ -34,6 +34,11 @@ BLACK = (0, 0, 0)
 RED = (204, 51, 0)
 BLUE = (50, 143, 168)
 
+CHANGE_BACK = 1
+CHANGE_FRONT = 2
+CHANGE_PARENT = 3
+CHANGE_CHILD = 4
+
 class GameObject:
     def __init__(self, game, position):
         self.game = game
@@ -78,8 +83,6 @@ class File(GameObject):
     def draw(self):
         self.game.window.blit(self.icon, self.position)
         self.game.window.blit(self.text, (self.position[0] + 35, self.position[1] + 7.5))
-
-    def update(self):
         
 class Directory(GameObject):    
     def __init__(self, game, position, name):
@@ -202,6 +205,8 @@ class Game:
             gameObject.input(events)
 
     def update(self):
+        os_module.go_to_parent()
+        newGameObject = fisier + directoare
         for gameObject in self.gameObjects:
             gameObject.update()
 

@@ -24,10 +24,12 @@ class MyOS:
     # Get all the directories in the current directory
     def set_dir_list(self):
         self.dir_list = [file for file in self.all_list if os.path.isdir(file)]
-    
+        self.dir_list.sort()
+
     # Get the files that are not directories in the current directory
     def set_file_list(self):
         self.file_list = [file for file in self.all_list if not os.path.isdir(file)]
+        self.file_list.sort()
        
     # Helper function to update all the files
     def update_files(self):
@@ -85,6 +87,10 @@ class MyOS:
             str_list.append(elem)
         return ''.join(str_list)
 
+    # Get the path as a list of string
+    def get_path_list(self):
+        return self.path
+
 """
 abc = os.getcwd()
 
@@ -101,13 +107,13 @@ for (x1, x2) in zip(list1, list2):
     counter += 1
 
 """
-
+'''
 os_module = MyOS(os.getcwd()) # Initializaza os_module la un director anume
 print(os_module.get_dir())
 print(os_module.get_dir_list())
 print(os_module.get_file_list())
 print(os_module.counter)
-'''
+
 os_module.change_dir_previous()
 print(os_module.get_dir())
 print(os_module.get_dir_list())
