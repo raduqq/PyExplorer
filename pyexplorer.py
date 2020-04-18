@@ -9,7 +9,7 @@ def main():
     #game.run()
     #pygame.quit()
 
-    explorer = MyOS("/home/uku/Materii/Anul II/CCNA Python/Proiect/PyExplorer")
+    explorer = MyOS(os.getcwd())
     print(explorer.get_dir_list())
     print(explorer.get_file_list())
     print(explorer.get_path_list())
