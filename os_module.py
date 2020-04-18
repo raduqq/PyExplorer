@@ -100,7 +100,6 @@ for (x1, x2) in zip(list1, list2):
         break
     counter += 1
 
-"""
 
 os_module = MyOS(os.getcwd()) # Initializaza os_module la un director anume
 print(os_module.get_dir())
@@ -132,4 +131,4 @@ print(os_module.counter)
 #TODO sa modific cand schimb intr-un child pe cazuri
 #TODO sa mai grupez din functii
 #TODO coding style
-'''
+"""

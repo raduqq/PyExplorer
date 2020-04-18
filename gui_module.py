@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 from math import sqrt
+from os_module import MyOS
+import os
 
 pygame.init()
 pygame.font.init()
@@ -80,6 +82,7 @@ class File(GameObject):
         self.game.window.blit(self.text, (self.position[0] + 35, self.position[1] + 7.5))
 
     def update(self):
+        pass
         
 class Directory(GameObject):    
     def __init__(self, game, position, name):
@@ -179,14 +182,22 @@ class Game:
         self.running = True
         self.font = pygame.font.SysFont(FONT, FONT_SIZE)
 
-        # Aici instantiez nebunii
+        # "Static" buttons
         self.close_butt = CloseButton(self, [SCREEN_WIDTH - BUTTON_RADIUS, BUTTON_RADIUS])
+        self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
+        self.back_butt = BackButton(self, (0, 0))
+
+        # Get your initial path, file list, dir list
+        os_module = MyOS(os.getcwd()) # Initializaza os_module la un director anume
+        print(os_module.get_dir())
+
+
+        # "Dynamic" stuff
         self.file = File(self, [15, 100], "Testfile")
         self.directory = Directory(self, [15, 130], "Testdir")
         self.filepath = Filepath(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
         self.highlighter = Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), ["Root", "Dir_1", "Dir_2"])
-        self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
-        self.back_butt = BackButton(self, (0, 0))
+        
         self.gameObjects = [self.back_butt, self.close_butt, self.file, self.directory, self.filepath, self.highlighter, self.front_butt]
 
     def run(self):
