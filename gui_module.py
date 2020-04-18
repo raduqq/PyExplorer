@@ -79,6 +79,8 @@ class File(GameObject):
         self.game.window.blit(self.icon, self.position)
         self.game.window.blit(self.text, (self.position[0] + 35, self.position[1] + 7.5))
 
+    def update(self):
+        
 class Directory(GameObject):    
     def __init__(self, game, position, name):
         super().__init__(game, position)
