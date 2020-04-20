@@ -9,10 +9,8 @@ class MyOS:
         self.file_list = []
         self.dir_list = []
 
-        self.set_path(curr_dir)
-        self.update_files()
-        self.counter = len(self.path) - 1
-
+        self.update()
+        
     def update(self):
         self.set_path(self.curr_dir)
         self.update_files()
@@ -58,19 +56,28 @@ class MyOS:
 
     # Go to the parent directory
     def change_dir_parent(self):
-        self.change_dir(os.path.dirname(self.curr_dir))
-        self.path = self.path[:-1]
-        self.counter -= 1
+        if self.counter >= 1:
+            self.change_dir(os.path.dirname(self.curr_dir))
+            self.path = self.path[:-1]
+            self.counter -= 1
 
     # Change to the next and previous directory in the path
     def change_dir_previous(self):
-        self.change_dir(os.path.dirname(self.curr_dir))
-        self.counter -= 1
+        if self.counter > 0:
+            self.change_dir(os.path.dirname(self.curr_dir))
+            self.counter -= 1
 
     def change_dir_next(self):
         if self.counter < len(self.path) - 1:
             self.change_dir(os.getcwd() + "/" + self.path[self.counter + 1])
             self.counter += 1
+
+    # Change current working directory to a directory in the path
+    def change_dir_path(self, new_dir):
+        location = self.path.index(new_dir)
+        new_location = self.path[:location + 1]
+        self.change_dir(self.get_path(new_location))
+        self.counter = location
 
     # Get current directory
     def get_dir(self):
@@ -85,9 +92,9 @@ class MyOS:
         return self.dir_list
 
     # Get the full path of the current directory
-    def get_path(self):
+    def get_path(self, temp_path):
         str_list = []
-        for elem in self.path:
+        for elem in temp_path:
             str_list.append("/")
             str_list.append(elem)
         return ''.join(str_list)
@@ -95,6 +102,10 @@ class MyOS:
     # Get the path as a list of string
     def get_path_list(self):
         return self.path
+
+    # Get the location of the cursor in the path
+    def get_counter(self):
+        return self.counter
 
 """
 abc = os.getcwd()
