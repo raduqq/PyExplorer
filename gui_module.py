@@ -270,7 +270,14 @@ if __name__ == '__main__':
 
     #TODO: Front button
         # -> Cand dau back, imi taie din filepath => nu pot sa mai dau front inapoi
+    #TODO: Highlighter
+        # -> Sa arate directoru in care sunt
     #TODO: Clicking on a certain directory from filepath
         # -> explorer.change_dir() nu stie sa mearga decat in fata/spate => eu vreau undeva la mijlocul filepath-ului
-    #TODO: Highlighter
-        # -> Sa se updateze dinamic pe curr_dir
+
+'''
+    DRAWING THE HIGHLIGHTER:
+
+    pygame.draw.rect(self.game.window, BLUE, (self.position[0] + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
+    self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+'''
