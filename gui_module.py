@@ -135,7 +135,8 @@ class Filepath(GameObject):
 
                 if (dist_x > 0 and dist_y > 0) and (dist_x < PATH_WIDTH and dist_y < PATH_HEIGHT):
                     self.game.code = CHANGE_DIR
-                    self.game.explorer.change_dir(self.curr_dir)
+                    # self.game.explorer.change_dir(self.curr_dir)
+                    print(self.curr_dir)
 
     def draw(self):
         text = self.game.font.render(self.curr_dir, False, BLACK)
@@ -194,11 +195,14 @@ class Game:
         self.code = code
         self.initial_dir = curr_dir
         self.window = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+
         pygame.display.set_caption('PyExplorer')
         pygame.time.Clock().tick(60)
+        
         self.running = True
         self.font = pygame.font.SysFont(FONT, FONT_SIZE)
-        # Aici instantiez nebunii
+        
+        # Explorer
         self.explorer = MyOS(curr_dir)
         
         # Dynamic objects
@@ -231,7 +235,6 @@ class Game:
     
     def update(self):
         self.explorer.update()
-        self.window.fill(WHITE)
 
         self.dir_objects = [Directory(self, [FILE_X_START, FILE_Y_START + (i * 30)], name) for i, name in enumerate(self.explorer.get_dir_list())]
         curr_counter = len(self.dir_objects)
@@ -265,6 +268,9 @@ def main():
 if __name__ == '__main__':
     main()
 
+    #TODO: Front button
+        # -> Cand dau back, imi taie din filepath => nu pot sa mai dau front inapoi
     #TODO: Clicking on a certain directory from filepath
-    #TODO: Front
+        # -> explorer.change_dir() nu stie sa mearga decat in fata/spate => eu vreau undeva la mijlocul filepath-ului
     #TODO: Highlighter
+        # -> Sa se updateze dinamic pe curr_dir
