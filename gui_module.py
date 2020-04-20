@@ -138,32 +138,11 @@ class Filepath(GameObject):
                     self.game.explorer.change_dir(self.curr_dir)
 
     def draw(self):
-        text = self.game.font.render(dir, False, BLACK)
+        text = self.game.font.render(self.curr_dir, False, BLACK)
 
-            pygame.draw.rect(self.game.window, YELLOW, (self.position[0] + PATH_WIDTH * cnt , self.position[1], PATH_WIDTH, PATH_HEIGHT), 0)
-            pygame.draw.rect(self.game.window, BLACK, (self.position[0] + PATH_WIDTH * cnt, self.position[1], PATH_WIDTH, PATH_HEIGHT), BORDER_THICKNESS)
-            self.game.window.blit(text, (self.position[0] + PATH_WIDTH * cnt + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
-
-            cnt += 1
-
-    def update(self):
-        self.draw()
-
-class Highlighter(Filepath):
-    def __init__(self, game, position, dir_list, curr_dir):
-        super().__init__(game, position, dir_list)
-        self.curr_dir = curr_dir
-        self.text = self.game.font.render(self.curr_dir, False, BLACK)
-
-    def draw(self):
-        cnt = 0
-        for dir in self.dir_list:
-            if self.curr_dir == dir:
-                break
-            cnt += 1
-
-        pygame.draw.rect(self.game.window, BLUE, (self.position[0] + PATH_WIDTH * cnt + HIGHLIGHT_OFFSET, self.position[1] + HIGHLIGHT_OFFSET, PATH_WIDTH - 2 * HIGHLIGHT_OFFSET, PATH_HEIGHT - 2 *HIGHLIGHT_OFFSET))
-        self.game.window.blit(self.text, (self.position[0] + PATH_WIDTH * cnt + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
+        pygame.draw.rect(self.game.window, YELLOW, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), 0)
+        pygame.draw.rect(self.game.window, BLACK, (self.position[0], self.position[1], PATH_WIDTH, PATH_HEIGHT), BORDER_THICKNESS)
+        self.game.window.blit(text, (self.position[0] + PATH_WIDTH // TEXT_TO_RECT_WIDTH_RATIO, self.position[1] + PATH_HEIGHT // TEXT_TO_RECT_HEIGHT_RATIO))
 
     def update(self):
         self.draw()
@@ -227,8 +206,8 @@ class Game:
         curr_counter = len(self.dir_objects)
         self.file_objects = [File(self, [FILE_X_START, FILE_Y_START + ((i + curr_counter) * 30)], name) for i, name in enumerate(self.explorer.get_file_list())]
         self.filepath = [Filepath(self, (2 * NAV_BUTTON_SIZE + i * PATH_WIDTH, 0), dir) for i, dir in enumerate(self.explorer.get_path_list())]
-        self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
-        self.temp_objects = self.dir_objects + self.file_objects + self.filepath + self.highlighter # update_files
+        # self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
+        self.temp_objects = self.dir_objects + self.file_objects + self.filepath # update_files
 
         # Constant objects
         self.front_butt = FrontButton(self, (NAV_BUTTON_SIZE,0))
@@ -258,8 +237,8 @@ class Game:
         curr_counter = len(self.dir_objects)
         self.file_objects = [File(self, [FILE_X_START, FILE_Y_START + ((i + curr_counter) * 30)], name) for i, name in enumerate(self.explorer.get_file_list())]
         self.filepath = [Filepath(self, (2 * NAV_BUTTON_SIZE + i * PATH_WIDTH, 0), dir) for i, dir in enumerate(self.explorer.get_path_list())]
-        self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
-        self.temp_objects = self.dir_objects + self.file_objects + self.filepath + self.highlighter # update_files
+        # self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
+        self.temp_objects = self.dir_objects + self.file_objects + self.filepath # update_files
 
         for gameObject in self.const_objects:
             gameObject.update()
@@ -286,6 +265,6 @@ def main():
 if __name__ == '__main__':
     main()
 
-    #TODO: click directoare
-    #TODO: click buton back/front
-    #TODO: Update-uri (@ toate clasele) + redraw all cand se "taie" din filepath
+    #TODO: Clicking on a certain directory from filepath
+    #TODO: Front
+    #TODO: Highlighter

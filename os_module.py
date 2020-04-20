@@ -13,6 +13,11 @@ class MyOS:
         self.update_files()
         self.counter = len(self.path) - 1
 
+    def update(self):
+        self.set_path(self.curr_dir)
+        self.update_files()
+        self.counter = len(self.path) - 1
+
     # Get the path as a list of strings, for later use
     def set_path(self, dir):
         self.path = (self.curr_dir.split("/"))[1::]
