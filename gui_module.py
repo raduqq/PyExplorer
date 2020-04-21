@@ -259,15 +259,6 @@ class Game:
             gameObject.input(events)
     
     def update(self):
-        #self.explorer.update()
-
-        #self.dir_objects = [Directory(self, [FILE_X_START, FILE_Y_START + (i * 30)], name) for i, name in enumerate(self.explorer.get_dir_list())]
-        #curr_counter = len(self.dir_objects)
-        #self.file_objects = [File(self, [FILE_X_START, FILE_Y_START + ((i + curr_counter) * 30)], name) for i, name in enumerate(self.explorer.get_file_list())]
-        #self.filepath = [Filepath(self, (2 * NAV_BUTTON_SIZE + i * PATH_WIDTH, 0), dir) for i, dir in enumerate(self.explorer.get_path_list())]
-        # self.highlighter = [Highlighter(self, (2 * NAV_BUTTON_SIZE, 0), self.explorer.get_path_list(), self.explorer.get_dir().split("/")[-1])]
-        #self.temp_objects = self.dir_objects + self.file_objects + self.filepath # update_files
-        #self.update_files()
         if self.code == CHANGE_BACK:
             self.explorer.change_dir_previous()
         elif self.code == CHANGE_FRONT:
@@ -277,11 +268,6 @@ class Game:
         elif self.code == CHANGE_PATH:
             self.explorer.change_dir_path(self.filename)
         self.update_files()
-
-        #for gameObject in self.const_objects:
-         #   gameObject.update()
-        #for gameObject in self.temp_objects:
-         #   gameObject.update()
 
     def draw(self):
         self.window.fill(WHITE)
@@ -293,15 +279,6 @@ class Game:
 
         pygame.display.update()
 
-
-def main():
-    # Run game
-    game = Game(os.getcwd())
-    game.run()
-    pygame.quit()
-
-if __name__ == '__main__':
-    main()
 
     #TODO
     # Sa facem textu de la highlighter sa incapa doar intr-o casuta
