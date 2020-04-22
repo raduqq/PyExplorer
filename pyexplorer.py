@@ -1,7 +1,6 @@
-from gui_module import Game
-from os_module import MyOS
-import pygame
 import os
+import pygame
+from gui_module import Game
 
 def main():
     # Run game

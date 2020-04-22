@@ -8,16 +8,17 @@ class MyOS:
         self.all_list = []
         self.file_list = []
         self.dir_list = []
+        self.counter = -1
 
         self.update()
-        
+      
     def update(self):
-        self.set_path(self.curr_dir)
+        self.set_path()
         self.update_files()
         self.counter = len(self.path) - 1
 
     # Get the path as a list of strings, for later use
-    def set_path(self, dir):
+    def set_path(self):
         self.path = (self.curr_dir.split("/"))[1::]
 
     # Get all the files in the current directory, except the hidden ones
@@ -51,7 +52,7 @@ class MyOS:
     def change_dir_child(self, new_dir):
         if new_dir and self.counter < len(self.path):
             self.change_dir(self.curr_dir + "/" + new_dir)
-            self.set_path(self.get_dir())
+            self.set_path()
             self.counter = len(self.path) - 1
 
     # Go to the parent directory
@@ -106,52 +107,3 @@ class MyOS:
     # Get the location of the cursor in the path
     def get_counter(self):
         return self.counter
-
-"""
-abc = os.getcwd()
-
-list1 = (abc.split("/"))[1::]
-print(list1)
-
-list2 = list1[0:4:]
-print(list2)
-
-counter = 0
-for (x1, x2) in zip(list1, list2):
-    if x1 != x2:
-        break
-    counter += 1
-
-"""
-'''
-os_module = MyOS(os.getcwd()) # Initializaza os_module la un director anume
-print(os_module.get_dir())
-print(os_module.get_dir_list())
-print(os_module.get_file_list())
-print(os_module.counter)
-
-os_module.change_dir_previous()
-print(os_module.get_dir())
-print(os_module.get_dir_list())
-print(os_module.get_file_list())
-print(os_module.counter)
-
-os_module.change_dir_previous()
-print(os_module.get_dir())
-print(os_module.get_dir_list())
-print(os_module.counter)
-
-os_module.change_dir_next()
-print(os_module.get_dir())
-print(os_module.get_dir_list())
-print(os_module.counter)
-
-os_module.change_dir_next()
-print(os_module.get_dir())
-print(os_module.get_dir_list())
-print(os_module.counter)
-
-#TODO sa modific cand schimb intr-un child pe cazuri
-#TODO sa mai grupez din functii
-#TODO coding style
-'''
