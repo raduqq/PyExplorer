@@ -53,7 +53,7 @@ class File(GameObject):
         self.name = name
 
         # Scaling image to standard size
-        self.icon = pygame.image.load(self.game.initial_dir + "/file_icon.png")
+        self.icon = pygame.image.load(self.game.initial_dir + "/imgs/file_icon.png")
         self.icon = pygame.transform.scale(
             self.icon, (Const.ICON_WIDTH, Const.ICON_HEIGHT))
 
@@ -71,7 +71,7 @@ class Directory(GameObject):
         self.name = name
 
         # Scaling image to standard size
-        self.icon = pygame.image.load(self.game.initial_dir + "/dir_icon.png")
+        self.icon = pygame.image.load(self.game.initial_dir + "/imgs/dir_icon.png")
         self.icon = pygame.transform.scale(
             self.icon, (Const.ICON_WIDTH, Const.ICON_HEIGHT))
 
