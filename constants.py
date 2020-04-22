@@ -1,5 +1,6 @@
 # Constants used for drawing the file explorer
 HIGHLIGHT_OFFSET = 2
+CLOSE_BUTTON_TEXT_OFFSET = 5
 FILE_TEXT_OFFSET_X = 35
 FILE_TEXT_OFFSET_Y = 7.5
 

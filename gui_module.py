@@ -8,16 +8,13 @@ from os_module import MyOS
 pygame.init()
 pygame.font.init()
 
-
+# General object class
 class GameObject:
     def __init__(self, game, position):
         self.game = game
         self.position = position
 
     def input(self, events):
-        pass
-
-    def update(self):
         pass
 
     def draw(self):
@@ -32,6 +29,7 @@ class CloseButton(GameObject):
     def input(self, events):
         for event in events:
             if event.type == MOUSEBUTTONDOWN:
+                # Determining if the click was on the close button
                 pos = list(pygame.mouse.get_pos())
                 dist = sqrt((pos[0] - self.position[0])**2 +
                             (pos[1] - self.position[1])**2)
@@ -44,17 +42,21 @@ class CloseButton(GameObject):
             self.position[0]), int(self.position[1])), Const.BUTTON_RADIUS)
         pygame.draw.circle(self.game.window, Const.BLACK, (int(self.position[0]), int(
             self.position[1])), Const.BUTTON_RADIUS, Const.BORDER_THICKNESS)
+
         self.game.window.blit(
-            self.text, (self.position[0] - 5, self.position[1] - 10))
+            self.text, (self.position[0] - Const.CLOSE_BUTTON_TEXT_OFFSET, self.position[1] - Const.CLOSE_BUTTON_TEXT_OFFSET * 2))
 
 
 class File(GameObject):
     def __init__(self, game, position, name):
         super().__init__(game, position)
         self.name = name
+
+        # Scaling image to standard size
         self.icon = pygame.image.load(self.game.initial_dir + "/file_icon.png")
         self.icon = pygame.transform.scale(
             self.icon, (Const.ICON_WIDTH, Const.ICON_HEIGHT))
+
         self.text = self.game.font.render(self.name, False, Const.BLACK)
 
     def draw(self):
@@ -67,9 +69,12 @@ class Directory(GameObject):
     def __init__(self, game, position, name):
         super().__init__(game, position)
         self.name = name
+
+        # Scaling image to standard size
         self.icon = pygame.image.load(self.game.initial_dir + "/dir_icon.png")
         self.icon = pygame.transform.scale(
             self.icon, (Const.ICON_WIDTH, Const.ICON_HEIGHT))
+
         self.text = self.game.font.render(self.name, False, Const.BLACK)
 
     def draw(self):
@@ -84,6 +89,7 @@ class Directory(GameObject):
                 dist_x = pos[0] - self.position[0]
                 dist_y = pos[1] - self.position[1]
 
+                # Determining if click was on directory icon
                 if (dist_x > 0 and dist_y > 0) and (dist_x < Const.ICON_WIDTH and dist_y < Const.ICON_HEIGHT) and self.game.code == Const.NO_CHANGE:
                     self.game.code = Const.CHANGE_CHILD
                     self.game.filename = self.name
@@ -94,6 +100,7 @@ class Highlighter(GameObject):
         super().__init__(game, position)
 
     def draw(self):
+        # Determining position of highlighter in filepath
         counter = self.game.explorer.get_counter()
         my_text = self.game.explorer.get_path_list()[counter]
         text = self.game.font.render(my_text, False, Const.BLACK)
@@ -116,6 +123,7 @@ class Filepath(GameObject):
                 dist_x = pos[0] - self.position[0]
                 dist_y = pos[1] - self.position[1]
 
+                # Determining if click was on a certain directory from filepath
                 if (dist_x > 0 and dist_y > 0) and (dist_x < Const.PATH_WIDTH and dist_y < Const.PATH_HEIGHT) and self.game.code == Const.NO_CHANGE:
                     self.game.code = Const.CHANGE_PATH
                     self.game.filename = self.curr_dir
@@ -143,6 +151,7 @@ class FrontButton(GameObject):
                 dist_x = pos[0] - self.position[0]
                 dist_y = pos[1] - self.position[1]
 
+                # If front button was clicked
                 if (dist_x > 0 and dist_y > 0) and (dist_x < Const.NAV_BUTTON_SIZE and dist_y < Const.NAV_BUTTON_SIZE) and self.game.code == Const.NO_CHANGE:
                     self.game.code = Const.CHANGE_FRONT
 
@@ -167,6 +176,7 @@ class BackButton(GameObject):
                 dist_x = pos[0] - self.position[0]
                 dist_y = pos[1] - self.position[1]
 
+                # If back button was clicked
                 if (dist_x > 0 and dist_y > 0) and (dist_x < Const.NAV_BUTTON_SIZE and dist_y < Const.NAV_BUTTON_SIZE) and self.game.code == Const.NO_CHANGE:
                     self.game.code = Const.CHANGE_BACK
 
@@ -236,6 +246,8 @@ class Game:
             game_object.input(events)
 
     def update(self):
+        # All updates happen through codes
+        # Determined by user input
         if self.code == Const.CHANGE_BACK:
             self.explorer.change_dir_previous()
         elif self.code == Const.CHANGE_FRONT:
