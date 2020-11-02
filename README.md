@@ -1,5 +1,5 @@
 # PyExplorer
-Pygame lightweight emulation of Linux's File Explorer (Nautilus). Navigates through an user's local filesystem, just like Nautilus.
+A Pygame lightweight emulation of Linux's File Explorer (Nautilus). Navigates through an user's local filesystem, just like Nautilus.
 
 # Installation (Linux)
 
